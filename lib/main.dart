@@ -10,7 +10,7 @@ final serviceLocator = GetIt.instance;
 
 Future<void> main() async {
   const config = Config(
-    baseUrl: 'https://api.sportradar.us/soccer-t3',
+    baseUrl: 'https://api.sportradar.us/soccer-xt3',
   );
 
   await init(serviceLocator, HttpClient(baseUrl: config.baseUrl));
@@ -51,18 +51,86 @@ class _MainPageState extends State<MainPage> {
           Container(
             height: 200,
             child: BlocBuilder<HeadToHeadBloc, HeadToHeadState>(
-              cubit: serviceLocator<HeadToHeadBloc>()..add(HeadToHeadEvent.fetchInitialData()),
+              cubit: serviceLocator<HeadToHeadBloc>()
+                ..add(HeadToHeadEvent.fetchInitialData()),
               builder: (context, state) {
                 return state.map(
-                  loading: (state) => const Center(
-                    child: const CircularProgressIndicator(),
-                  ),
-                  loaded: (state) {
-                    return Container(
-                      color: Colors.green,
-                    );
-                  }
-                );
+                    loading: (state) => const Center(
+                          child: const CircularProgressIndicator(),
+                        ),
+                    loaded: (state) {
+                      return Container(
+                        color: Colors.green,
+                        // Статистика команд
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // home
+                            Column(
+                              children: [
+                                // Имя команды
+                                Text('Команда: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'home')
+                                        .name),
+                                // Забили голов:
+                                Text('Забили голов: ' +
+                                    state
+                                        .matchSummary.sportEventStatus.homeScore
+                                        .toString()),
+                                // Владения мячом
+                                Text('Владение мячом: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'home')
+                                        .statistics['ball_possession']
+                                        .toString() +
+                                    '%'),
+                                // Получили желтых карточек:
+                                Text('Желтых карточек: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'home')
+                                        .statistics['yellow_cards']
+                                        .toString()),
+                              ],
+                            ),
+                            // awai
+                            Column(
+                              children: [
+                                // Имя команды
+                                Text('Команда: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'away')
+                                        .name),
+                                // Забили голов:
+                                Text('Забили голов: ' +
+                                    state
+                                        .matchSummary.sportEventStatus.awayScore
+                                        .toString()),
+                                // Владения мячом
+                                Text('Владение мячом: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'away')
+                                        .statistics['ball_possession']
+                                        .toString() +
+                                    '%'),
+                                // Получили желтых карточек:
+                                Text('Желтых карточек: ' +
+                                    state.matchSummary.statistics.teams
+                                        .firstWhere(
+                                            (e) => e.qualifier == 'away')
+                                        .statistics['yellow_cards']
+                                        .toString()),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    });
               },
             ),
           ),

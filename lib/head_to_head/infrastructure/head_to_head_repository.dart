@@ -11,7 +11,8 @@ class HeadToHeadRepository {
   }) : _client = client;
 
   Future<MatchSummary> getMatchSummary() async {
-    final response = await _client.get('/intl/en/matches/sr:match:13307977/summary.json?api_key=b87pdv3kzejgujc98339p9xk');
+    final response = await _client.get(
+        '/eu/en/matches/sr:match:23300709/summary.json?api_key=cvvqkv6p97amjsjuq5z2tqp8');
     return MatchSummary.fromJson(json.decode(response.body));
   }
 }
