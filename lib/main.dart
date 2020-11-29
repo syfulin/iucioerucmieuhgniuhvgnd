@@ -5,15 +5,17 @@ import 'package:hackathon/config.dart';
 import 'package:hackathon/http_client.dart';
 import 'package:hackathon/injections.dart';
 import 'package:hackathon/head_to_head/presentation/bloc/head_to_head_bloc.dart';
+import 'package:hackathon/live_matches/presentation/live_matches.dart';
 
 final serviceLocator = GetIt.instance;
 
-Future<void> main() async {
-  const config = Config(
-    baseUrl: 'https://api.sportradar.us/soccer-xt3',
-  );
+const _config = Config(
+  baseUrl: 'https://api.sportradar.us/soccer-xt3',
+  apiKey: 'n7kgjnqegbrpezpspffvmhgn',
+);
 
-  await init(serviceLocator, HttpClient(baseUrl: config.baseUrl));
+Future<void> main() async {
+  await init(serviceLocator, HttpClient(baseUrl: _config.baseUrl), _config.apiKey);
   runApp(MyApp());
 }
 
@@ -46,96 +48,97 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: 200,
-            child: BlocBuilder<HeadToHeadBloc, HeadToHeadState>(
-              cubit: serviceLocator<HeadToHeadBloc>()
-                ..add(HeadToHeadEvent.fetchInitialData()),
-              builder: (context, state) {
-                return state.map(
-                    loading: (state) => const Center(
-                          child: const CircularProgressIndicator(),
-                        ),
-                    loaded: (state) {
-                      return Container(
-                        color: Colors.green,
-                        // Статистика команд
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // home
-                            Column(
-                              children: [
-                                // Имя команды
-                                Text('Команда: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'home')
-                                        .name),
-                                // Забили голов:
-                                Text('Забили голов: ' +
-                                    state
-                                        .matchSummary.sportEventStatus.homeScore
-                                        .toString()),
-                                // Владения мячом
-                                Text('Владение мячом: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'home')
-                                        .statistics['ball_possession']
-                                        .toString() +
-                                    '%'),
-                                // Получили желтых карточек:
-                                Text('Желтых карточек: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'home')
-                                        .statistics['yellow_cards']
-                                        .toString()),
-                              ],
-                            ),
-                            // awai
-                            Column(
-                              children: [
-                                // Имя команды
-                                Text('Команда: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'away')
-                                        .name),
-                                // Забили голов:
-                                Text('Забили голов: ' +
-                                    state
-                                        .matchSummary.sportEventStatus.awayScore
-                                        .toString()),
-                                // Владения мячом
-                                Text('Владение мячом: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'away')
-                                        .statistics['ball_possession']
-                                        .toString() +
-                                    '%'),
-                                // Получили желтых карточек:
-                                Text('Желтых карточек: ' +
-                                    state.matchSummary.statistics.teams
-                                        .firstWhere(
-                                            (e) => e.qualifier == 'away')
-                                        .statistics['yellow_cards']
-                                        .toString()),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-              },
-            ),
-          ),
-        ],
-      ),
+      body: LiveMatches(),
+      // body: Column(
+      //   children: <Widget>[
+      //     Container(
+      //       height: 200,
+      //       child: BlocBuilder<HeadToHeadBloc, HeadToHeadState>(
+      //         cubit: serviceLocator<HeadToHeadBloc>()
+      //           ..add(HeadToHeadEvent.fetchInitialData()),
+      //         builder: (context, state) {
+      //           return state.map(
+      //               loading: (state) => const Center(
+      //                     child: const CircularProgressIndicator(),
+      //                   ),
+      //               loaded: (state) {
+      //                 return Container(
+      //                   color: Colors.green,
+      //                   // Статистика команд
+      //                   child: Row(
+      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                     children: [
+      //                       // home
+      //                       Column(
+      //                         children: [
+      //                           // Имя команды
+      //                           Text('Команда: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'home')
+      //                                   .name),
+      //                           // Забили голов:
+      //                           Text('Забили голов: ' +
+      //                               state
+      //                                   .matchSummary.sportEventStatus.homeScore
+      //                                   .toString()),
+      //                           // Владения мячом
+      //                           Text('Владение мячом: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'home')
+      //                                   .statistics['ball_possession']
+      //                                   .toString() +
+      //                               '%'),
+      //                           // Получили желтых карточек:
+      //                           Text('Желтых карточек: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'home')
+      //                                   .statistics['yellow_cards']
+      //                                   .toString()),
+      //                         ],
+      //                       ),
+      //                       // awai
+      //                       Column(
+      //                         children: [
+      //                           // Имя команды
+      //                           Text('Команда: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'away')
+      //                                   .name),
+      //                           // Забили голов:
+      //                           Text('Забили голов: ' +
+      //                               state
+      //                                   .matchSummary.sportEventStatus.awayScore
+      //                                   .toString()),
+      //                           // Владения мячом
+      //                           Text('Владение мячом: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'away')
+      //                                   .statistics['ball_possession']
+      //                                   .toString() +
+      //                               '%'),
+      //                           // Получили желтых карточек:
+      //                           Text('Желтых карточек: ' +
+      //                               state.matchSummary.statistics.teams
+      //                                   .firstWhere(
+      //                                       (e) => e.qualifier == 'away')
+      //                                   .statistics['yellow_cards']
+      //                                   .toString()),
+      //                         ],
+      //                       ),
+      //                     ],
+      //                   ),
+      //                 );
+      //               });
+      //         },
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

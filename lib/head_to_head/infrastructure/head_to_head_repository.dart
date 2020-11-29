@@ -5,14 +5,17 @@ import 'dart:convert';
 
 class HeadToHeadRepository {
   final HttpClient _client;
+  final String _apiKey;
 
   HeadToHeadRepository({
     @required HttpClient client,
-  }) : _client = client;
+    @required String apiKey,
+  }) : _client = client, _apiKey = apiKey;
 
-  Future<MatchSummary> getMatchSummary() async {
+  Future<MatchSummary> getMatchSummary(String matchId) async {
     final response = await _client.get(
-        '/eu/en/matches/sr:match:23300709/summary.json?api_key=cvvqkv6p97amjsjuq5z2tqp8');
+        '/other/en/matches/$matchId/summary.json?api_key=$_apiKey');
+    print(response.body);
     return MatchSummary.fromJson(json.decode(response.body));
   }
 }

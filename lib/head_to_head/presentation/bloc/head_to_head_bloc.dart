@@ -10,7 +10,9 @@ part 'head_to_head_bloc.freezed.dart';
 
 @freezed
 abstract class HeadToHeadEvent with _$HeadToHeadEvent {
-  const factory HeadToHeadEvent.fetchInitialData() = HeadToHeadInitialData;
+  const factory HeadToHeadEvent.fetchMatchData({
+    @required String matchId,
+  }) = HeadToHeadInitialData;
 }
 
 @freezed
@@ -26,15 +28,15 @@ class HeadToHeadBloc extends Bloc<HeadToHeadEvent, HeadToHeadState> {
   
   HeadToHeadBloc({
     @required HeadToHeadRepository headToHeadRepository,
-  }) : this._headToHeadRepository = headToHeadRepository, super(HeadToHeadState.loading());
+  }) : _headToHeadRepository = headToHeadRepository, super(HeadToHeadState.loading());
 
   @override
   Stream<HeadToHeadState> mapEventToState(
     HeadToHeadEvent event,
   ) => event.when(
-    fetchInitialData: () async* {
+    fetchMatchData: (matchId) async* {
       yield HeadToHeadState.loading();
-      final matchSummary = await _headToHeadRepository.getMatchSummary();
+      final matchSummary = await _headToHeadRepository.getMatchSummary(matchId);
       yield HeadToHeadState.loaded(matchSummary: matchSummary);
     },
   );
