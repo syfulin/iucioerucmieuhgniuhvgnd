@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hackathon/config.dart';
+import 'package:hackathon/head_to_head/presentation/head_to_head_new.dart';
 import 'package:hackathon/http_client.dart';
 import 'package:hackathon/injections.dart';
 import 'package:hackathon/head_to_head/presentation/bloc/head_to_head_bloc.dart';
@@ -15,7 +16,8 @@ const _config = Config(
 );
 
 Future<void> main() async {
-  await init(serviceLocator, HttpClient(baseUrl: _config.baseUrl), _config.apiKey);
+  await init(
+      serviceLocator, HttpClient(baseUrl: _config.baseUrl), _config.apiKey);
   runApp(MyApp());
 }
 
@@ -48,7 +50,8 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: LiveMatches(),
+      // body: LiveMatches(),
+      body: HeadToHeadNew(),
       // body: Column(
       //   children: <Widget>[
       //     Container(
