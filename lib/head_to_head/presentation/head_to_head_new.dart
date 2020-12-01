@@ -254,9 +254,15 @@ class _HeadToHeadNewState extends State<HeadToHeadNew> {
 }
 
 // Список статистики
-class Statistics extends StatelessWidget {
+class Statistics extends StatefulWidget {
   final data;
   Statistics(this.data);
+
+  @override
+  _StatisticsState createState() => _StatisticsState();
+}
+
+class _StatisticsState extends State<Statistics> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -271,23 +277,52 @@ class Statistics extends StatelessWidget {
           color: Color.fromARGB(255, 0, 106, 74),
         ),
         child: ExpansionTile(
+          onExpansionChanged: (value) {
+            setState(() {
+              switcherVisible = value;
+            });
+          },
           // key: PageStorageKey<String>('key1'),
-          title: titleData('Статистика матча'),
+          title: TitleData(text: 'Статистика матча'),
           children: [
+            Visibility(
+              visible: switcherVisible,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Switch(
+                    activeColor: Colors.red,
+                    onChanged: (bool value) {
+                      setState(() {
+                        moreInfo = value;
+                      });
+                    },
+                    value: moreInfo,
+                  ),
+                  Text(
+                    '${moreInfo ? 'Скрыть   ' : 'Показать'}\nсекундомеры событий',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары', data['udary']),
+            itemData('Удары', widget.data['udary']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары в створ', data['udary_v_stvor']),
+            itemData('Удары в створ', widget.data['udary_v_stvor']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары мимо', data['udary_mimo']),
+            itemData('Удары мимо', widget.data['udary_mimo']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Штрафные удары', data['shtrafnie_udary']),
+            itemData('Штрафные удары', widget.data['shtrafnie_udary']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Оффсайды', data['offsidy']),
+            itemData('Оффсайды', widget.data['offsidy']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Сейвы вратаря', data['seyvy_vratarya']),
+            itemData('Сейвы вратаря', widget.data['seyvy_vratarya']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Фолы', data['foly'], true),
+            itemData('Фолы', widget.data['foly'], true),
           ],
         ),
       ),
@@ -295,22 +330,37 @@ class Statistics extends StatelessWidget {
   }
 }
 
+bool moreInfo = false;
+bool switcherVisible = false;
+
 // Виджет заголовка статистики
-Widget titleData(String text) {
-  return Container(
-    // width: 231,
-    height: 23,
-    // color: Color.fromARGB(255, 0, 106, 74),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          text,
-          style: TextStyle(color: Colors.white, fontSize: 14),
-        ),
-      ],
-    ),
-  );
+class TitleData extends StatefulWidget {
+  final text;
+
+  const TitleData({Key key, this.text}) : super(key: key);
+
+  @override
+  _TitleDataState createState() => _TitleDataState();
+}
+
+class _TitleDataState extends State<TitleData> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // width: 231,
+      height: 23,
+      // color: Color.fromARGB(255, 0, 106, 74),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            widget.text,
+            style: TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // Видет элемента списка статистики
@@ -335,22 +385,36 @@ Widget itemData(String text, List count, [bool last = false]) {
           Row(
             children: [
               Text('  ${count[0].value}'),
-              Text(
-                (count[0].value > 0
-                    ? '  ${count[0].time ~/ 60}:${count[0].time % 60}'
-                    : ''),
-                style: TextStyle(color: Colors.red),
+              Visibility(
+                visible: moreInfo,
+                // maintainState: true,
+                // maintainAnimation: true,
+                // maintainSize: true,
+                // maintainInteractivity: true,
+                child: Text(
+                  (count[0].value > 0
+                      ? '  ${(count[0].time ~/ 60)}:${count[0].time % 60}'
+                      : ''),
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
             ],
           ),
           Text(text),
           Row(
             children: [
-              Text(
-                (count[1].value > 0
-                    ? '${count[1].time ~/ 60}:${count[1].time % 60}  '
-                    : ''),
-                style: TextStyle(color: Colors.red),
+              Visibility(
+                visible: moreInfo,
+                // maintainState: true,
+                // maintainAnimation: true,
+                // maintainSize: true,
+                // maintainInteractivity: true,
+                child: Text(
+                  (count[1].value > 0
+                      ? '${count[1].time ~/ 60}:${count[1].time % 60}  '
+                      : ''),
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
               Text('${count[1].value}  '),
             ],
