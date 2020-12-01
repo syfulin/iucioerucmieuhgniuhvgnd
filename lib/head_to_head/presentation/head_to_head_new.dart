@@ -1,7 +1,113 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:math';
 
-class HeadToHeadNew extends StatelessWidget {
-  const HeadToHeadNew();
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../main.dart';
+import 'bloc/head_to_head_bloc.dart';
+
+class HeadToHeadNew extends StatefulWidget {
+  HeadToHeadNew();
+
+  @override
+  _HeadToHeadNewState createState() => _HeadToHeadNewState();
+}
+
+class Event {
+  int value;
+  int time;
+  bool change;
+  Event(this.value, this.time, this.change);
+}
+
+class _HeadToHeadNewState extends State<HeadToHeadNew> {
+  final _bloc = serviceLocator<HeadToHeadBloc>();
+
+  int timer = 0;
+  Map<String, List<Event>> data = {
+    'score': [Event(0, 0, false), Event(0, 0, false)],
+    'udary': [Event(0, 0, false), Event(0, 0, false)],
+    'udary_v_stvor': [Event(0, 0, false), Event(0, 0, false)],
+    'udary_mimo': [Event(0, 0, false), Event(0, 0, false)],
+    'shtrafnie_udary': [Event(0, 0, false), Event(0, 0, false)],
+    'offsidy': [Event(0, 0, false), Event(0, 0, false)],
+    'seyvy_vratarya': [Event(0, 0, false), Event(0, 0, false)],
+    'foly': [Event(0, 0, false), Event(0, 0, false)],
+  };
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    const oneSec = const Duration(seconds: 1);
+    Timer.periodic(oneSec, (Timer t) {
+      setState(() {
+        // Секундомер
+        timer++;
+
+        // Обновить секундомеры
+        data['score'][0].time++;
+        data['udary'][0].time++;
+        data['udary_v_stvor'][0].time++;
+        data['udary_mimo'][0].time++;
+        data['shtrafnie_udary'][0].time++;
+        data['offsidy'][0].time++;
+        data['seyvy_vratarya'][0].time++;
+        data['foly'][0].time++;
+
+        data['score'][1].time++;
+        data['udary'][1].time++;
+        data['udary_v_stvor'][1].time++;
+        data['udary_mimo'][1].time++;
+        data['shtrafnie_udary'][1].time++;
+        data['offsidy'][1].time++;
+        data['seyvy_vratarya'][1].time++;
+        data['foly'][1].time++;
+
+        data['score'][0].change = false;
+        data['udary'][0].change = false;
+        data['udary_v_stvor'][0].change = false;
+        data['udary_mimo'][0].change = false;
+        data['shtrafnie_udary'][0].change = false;
+        data['offsidy'][0].change = false;
+        data['seyvy_vratarya'][0].change = false;
+        data['foly'][0].change = false;
+
+        data['score'][1].change = false;
+        data['udary'][1].change = false;
+        data['udary_v_stvor'][1].change = false;
+        data['udary_mimo'][1].change = false;
+        data['shtrafnie_udary'][1].change = false;
+        data['offsidy'][1].change = false;
+        data['seyvy_vratarya'][1].change = false;
+        data['foly'][1].change = false;
+
+        if (timer % 5 == 0) {
+          int commandId = Random().nextInt(2); // id команды
+          int eventId = Random().nextInt(9); // id события
+
+          Map<int, String> types = {
+            0: 'score',
+            1: 'udary',
+            2: 'udary_v_stvor',
+            3: 'udary_mimo',
+            4: 'shtrafnie_udary',
+            5: 'offsidy',
+            6: 'seyvy_vratarya',
+            7: 'foly',
+          };
+
+          // Обновить нужные данные
+          data[types[eventId]][commandId].value++;
+          data[types[eventId]][commandId].change = true;
+
+          // Обнулить секундомеры
+          data[types[eventId]][commandId].time = 0;
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,61 +122,76 @@ class HeadToHeadNew extends StatelessWidget {
           Column(
             children: [
               // 1. Виджет Live-статистики
-              Expanded(
-                flex: 30, // Занимает 30 частей экрана (30 %)
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Левый блок (первая команда)
-                    Expanded(
-                      flex: 60,
-                      child: Container(
-                        color: Color.fromARGB(204, 196, 196, 196),
-                        width: 60,
-                        height: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.ac_unit,
-                              size: 45,
+              BlocBuilder(
+                cubit: _bloc,
+                builder: (context, state) {
+                  // print(context.read<HeadToHeadBloc>());
+                  return Expanded(
+                    flex: 30, // Занимает 30 частей экрана (30 %)
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Левый блок (первая команда)
+                        Expanded(
+                          flex: 60,
+                          child: Container(
+                            color: Color.fromARGB(204, 196, 196, 196),
+                            width: 60,
+                            height: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                    'assets/images/Icon-image-team1.png', // Логотип
+                                  ),
+                                  // Icons.ac_unit,
+                                  // size: 45,
+                                  width: 45,
+                                ),
+                                SizedBox(height: 6),
+                                Text('УФА', style: TextStyle(fontSize: 12)),
+                              ],
                             ),
-                            SizedBox(height: 6),
-                            Text('УФА', style: TextStyle(fontSize: 17)),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    // Статистика
-                    Expanded(
-                      flex: 231,
-                      child: Container(
-                        color: Colors.red,
-                      ),
-                    ),
-                    // Правый блок (вторая команда)
-                    Expanded(
-                      flex: 60,
-                      child: Container(
-                        color: Color.fromARGB(204, 196, 196, 196),
-                        width: 60,
-                        height: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.ac_unit,
-                              size: 45,
+                        // Статистика
+                        Expanded(
+                          flex: 231,
+                          child: Container(
+                              // color: Colors.red,
+                              ),
+                        ),
+                        // Правый блок (вторая команда)
+                        Expanded(
+                          flex: 60,
+                          child: Container(
+                            color: Color.fromARGB(204, 196, 196, 196),
+                            width: 60,
+                            height: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                    'assets/images/Icon-image-team2.png', // Логотип
+                                  ),
+                                  // Icons.ac_unit,
+                                  // size: 45,
+                                  width: 45,
+                                ),
+                                SizedBox(height: 6),
+                                Text('МОСКВА', style: TextStyle(fontSize: 12)),
+                              ],
                             ),
-                            SizedBox(height: 6),
-                            Text('УФА', style: TextStyle(fontSize: 17)),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
+
               // Вся остальная часть экрана (где делать ставки и т д)
               Expanded(
                 flex: 70, // Занимает 70 частей экрана (70 %)
@@ -97,7 +218,7 @@ class HeadToHeadNew extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 231,
+                flex: 295,
                 child: Container(
                   // color: Colors.white,
                   padding: const EdgeInsets.all(16),
@@ -105,14 +226,15 @@ class HeadToHeadNew extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          Text('МАТЧ СОСТОЯЛСЯ',
+                          Text('ВРЕМЯ МАТЧА:', style: TextStyle(fontSize: 15)),
+                          Text('${timer ~/ 60}:${timer % 60}',
                               style: TextStyle(fontSize: 15)),
-                          Text('22.11.2020', style: TextStyle(fontSize: 15)),
                         ],
                       ),
-                      
-                      Text('9:9', style: TextStyle(fontSize: 37.5)),
-                      Statistics(),
+                      Text(
+                          '${data['score'][0].value}:${data['score'][1].value}',
+                          style: TextStyle(fontSize: 37.5)),
+                      Statistics(data),
                     ],
                   ),
                 ),
@@ -133,6 +255,8 @@ class HeadToHeadNew extends StatelessWidget {
 
 // Список статистики
 class Statistics extends StatelessWidget {
+  final data;
+  Statistics(this.data);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -151,19 +275,19 @@ class Statistics extends StatelessWidget {
           title: titleData('Статистика матча'),
           children: [
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары'),
+            itemData('Удары', data['udary']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары в створ'),
+            itemData('Удары в створ', data['udary_v_stvor']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Удары мимо'),
+            itemData('Удары мимо', data['udary_mimo']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Штрафные удары'),
+            itemData('Штрафные удары', data['shtrafnie_udary']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Оффсайды'),
+            itemData('Оффсайды', data['offsidy']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Сейвы вратаря'),
+            itemData('Сейвы вратаря', data['seyvy_vratarya']),
             Container(height: 1, color: Color.fromARGB(255, 0, 106, 74)),
-            itemData('Фолы', true),
+            itemData('Фолы', data['foly'], true),
           ],
         ),
       ),
@@ -190,53 +314,49 @@ Widget titleData(String text) {
 }
 
 // Видет элемента списка статистики
-Widget itemData(String text, [bool last = false]) {
+Widget itemData(String text, List count, [bool last = false]) {
   return Container(
-    color: Colors.white, // transparent ?
+    color: Colors.transparent, // transparent ?
     child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(last ? 12 : 0),
           bottomRight: Radius.circular(last ? 12 : 0),
         ),
-        color: Color.fromARGB(127, 76, 217, 100), // Убрать прозрачность ?
+        color: (count[0].change || count[1].change)
+            ? Color.fromARGB(255, 213, 153, 166)
+            : Color.fromARGB(255, 166, 236, 178), // Убрать прозрачность ?
       ),
       // width: 231,
       height: 27,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('     23'),
+          Row(
+            children: [
+              Text('  ${count[0].value}'),
+              Text(
+                (count[0].value > 0
+                    ? '  ${count[0].time ~/ 60}:${count[0].time % 60}'
+                    : ''),
+                style: TextStyle(color: Colors.red),
+              ),
+            ],
+          ),
           Text(text),
-          Text('23     '),
+          Row(
+            children: [
+              Text(
+                (count[1].value > 0
+                    ? '${count[1].time ~/ 60}:${count[1].time % 60}  '
+                    : ''),
+                style: TextStyle(color: Colors.red),
+              ),
+              Text('${count[1].value}  '),
+            ],
+          ),
         ],
       ),
     ),
   );
 }
-
-// // Статистика
-// Expanded(
-//   flex: 231,
-//   child: Container(
-//     color: Colors.red,
-//     // constraints:
-//     //     BoxConstraints(minHeight: 231, maxHeight: 231),
-//     // height: 350,
-//     child: Column(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Column(
-//           children: [
-//             Text('МАТЧ СОСТОЯЛСЯ',
-//                 style: TextStyle(fontSize: 21)),
-//             Text('22.11.2020',
-//                 style: TextStyle(fontSize: 21)),
-//           ],
-//         ),
-//         Text('9:9', style: TextStyle(fontSize: 60)),
-//         Statistics(),
-//       ],
-//     ),
-//   ),
-// ),

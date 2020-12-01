@@ -19,6 +19,11 @@ class _$HeadToHeadEventTearOff {
       matchId: matchId,
     );
   }
+
+// ignore: unused_element
+  _HeadToHeadUpdateData updateData() {
+    return const _HeadToHeadUpdateData();
+  }
 }
 
 /// @nodoc
@@ -27,28 +32,28 @@ const $HeadToHeadEvent = _$HeadToHeadEventTearOff();
 
 /// @nodoc
 mixin _$HeadToHeadEvent {
-  String get matchId;
-
   @optionalTypeArgs
   TResult when<TResult extends Object>({
     @required TResult fetchMatchData(String matchId),
+    @required TResult updateData(),
   });
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object>({
     TResult fetchMatchData(String matchId),
+    TResult updateData(),
     @required TResult orElse(),
   });
   @optionalTypeArgs
   TResult map<TResult extends Object>({
     @required TResult fetchMatchData(HeadToHeadInitialData value),
+    @required TResult updateData(_HeadToHeadUpdateData value),
   });
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object>({
     TResult fetchMatchData(HeadToHeadInitialData value),
+    TResult updateData(_HeadToHeadUpdateData value),
     @required TResult orElse(),
   });
-
-  $HeadToHeadEventCopyWith<HeadToHeadEvent> get copyWith;
 }
 
 /// @nodoc
@@ -56,7 +61,6 @@ abstract class $HeadToHeadEventCopyWith<$Res> {
   factory $HeadToHeadEventCopyWith(
           HeadToHeadEvent value, $Res Function(HeadToHeadEvent) then) =
       _$HeadToHeadEventCopyWithImpl<$Res>;
-  $Res call({String matchId});
 }
 
 /// @nodoc
@@ -67,24 +71,13 @@ class _$HeadToHeadEventCopyWithImpl<$Res>
   final HeadToHeadEvent _value;
   // ignore: unused_field
   final $Res Function(HeadToHeadEvent) _then;
-
-  @override
-  $Res call({
-    Object matchId = freezed,
-  }) {
-    return _then(_value.copyWith(
-      matchId: matchId == freezed ? _value.matchId : matchId as String,
-    ));
-  }
 }
 
 /// @nodoc
-abstract class $HeadToHeadInitialDataCopyWith<$Res>
-    implements $HeadToHeadEventCopyWith<$Res> {
+abstract class $HeadToHeadInitialDataCopyWith<$Res> {
   factory $HeadToHeadInitialDataCopyWith(HeadToHeadInitialData value,
           $Res Function(HeadToHeadInitialData) then) =
       _$HeadToHeadInitialDataCopyWithImpl<$Res>;
-  @override
   $Res call({String matchId});
 }
 
@@ -143,8 +136,10 @@ class _$HeadToHeadInitialData implements HeadToHeadInitialData {
   @optionalTypeArgs
   TResult when<TResult extends Object>({
     @required TResult fetchMatchData(String matchId),
+    @required TResult updateData(),
   }) {
     assert(fetchMatchData != null);
+    assert(updateData != null);
     return fetchMatchData(matchId);
   }
 
@@ -152,6 +147,7 @@ class _$HeadToHeadInitialData implements HeadToHeadInitialData {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object>({
     TResult fetchMatchData(String matchId),
+    TResult updateData(),
     @required TResult orElse(),
   }) {
     assert(orElse != null);
@@ -165,8 +161,10 @@ class _$HeadToHeadInitialData implements HeadToHeadInitialData {
   @optionalTypeArgs
   TResult map<TResult extends Object>({
     @required TResult fetchMatchData(HeadToHeadInitialData value),
+    @required TResult updateData(_HeadToHeadUpdateData value),
   }) {
     assert(fetchMatchData != null);
+    assert(updateData != null);
     return fetchMatchData(this);
   }
 
@@ -174,6 +172,7 @@ class _$HeadToHeadInitialData implements HeadToHeadInitialData {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object>({
     TResult fetchMatchData(HeadToHeadInitialData value),
+    TResult updateData(_HeadToHeadUpdateData value),
     @required TResult orElse(),
   }) {
     assert(orElse != null);
@@ -188,10 +187,99 @@ abstract class HeadToHeadInitialData implements HeadToHeadEvent {
   const factory HeadToHeadInitialData({@required String matchId}) =
       _$HeadToHeadInitialData;
 
-  @override
   String get matchId;
-  @override
   $HeadToHeadInitialDataCopyWith<HeadToHeadInitialData> get copyWith;
+}
+
+/// @nodoc
+abstract class _$HeadToHeadUpdateDataCopyWith<$Res> {
+  factory _$HeadToHeadUpdateDataCopyWith(_HeadToHeadUpdateData value,
+          $Res Function(_HeadToHeadUpdateData) then) =
+      __$HeadToHeadUpdateDataCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$HeadToHeadUpdateDataCopyWithImpl<$Res>
+    extends _$HeadToHeadEventCopyWithImpl<$Res>
+    implements _$HeadToHeadUpdateDataCopyWith<$Res> {
+  __$HeadToHeadUpdateDataCopyWithImpl(
+      _HeadToHeadUpdateData _value, $Res Function(_HeadToHeadUpdateData) _then)
+      : super(_value, (v) => _then(v as _HeadToHeadUpdateData));
+
+  @override
+  _HeadToHeadUpdateData get _value => super._value as _HeadToHeadUpdateData;
+}
+
+/// @nodoc
+class _$_HeadToHeadUpdateData implements _HeadToHeadUpdateData {
+  const _$_HeadToHeadUpdateData();
+
+  @override
+  String toString() {
+    return 'HeadToHeadEvent.updateData()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) || (other is _HeadToHeadUpdateData);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object>({
+    @required TResult fetchMatchData(String matchId),
+    @required TResult updateData(),
+  }) {
+    assert(fetchMatchData != null);
+    assert(updateData != null);
+    return updateData();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object>({
+    TResult fetchMatchData(String matchId),
+    TResult updateData(),
+    @required TResult orElse(),
+  }) {
+    assert(orElse != null);
+    if (updateData != null) {
+      return updateData();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object>({
+    @required TResult fetchMatchData(HeadToHeadInitialData value),
+    @required TResult updateData(_HeadToHeadUpdateData value),
+  }) {
+    assert(fetchMatchData != null);
+    assert(updateData != null);
+    return updateData(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object>({
+    TResult fetchMatchData(HeadToHeadInitialData value),
+    TResult updateData(_HeadToHeadUpdateData value),
+    @required TResult orElse(),
+  }) {
+    assert(orElse != null);
+    if (updateData != null) {
+      return updateData(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _HeadToHeadUpdateData implements HeadToHeadEvent {
+  const factory _HeadToHeadUpdateData() = _$_HeadToHeadUpdateData;
 }
 
 /// @nodoc
